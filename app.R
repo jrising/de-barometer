@@ -67,7 +67,7 @@ ui <- fluidPage(
 
     ## Application title
     titlePanel("Delaware Coastal Barometer"),
-    leafletOutput("slosh"),
+
     ## Main panel to display the plot
     mainPanel(
         card(card_header("High Tide Flood Days"),
@@ -76,7 +76,7 @@ ui <- fluidPage(
                  markdown("From [https://tidesandcurrents.noaa.gov/high-tide-flooding/annual-outlook.html]."))),
         card(card_header("Storm Surge Inundation"),
              card_body(
-                 #leafletOutput("slosh"),
+                 leafletOutput("slosh"),
                  markdown("Hover over the map to see the inundation levels in feet. From [https://www.nhc.noaa.gov/nationalsurge/?text]."))),
         card(card_header("Recent changes"),
              card_body(
@@ -108,13 +108,20 @@ server <- function(input, output) {
     })
 
     output$slosh <- renderLeaflet({
+        factored <- factor(c("0 - 1 ft", "1 ft", "3 ft", "7 ft", "10 ft"), levels=c("0 - 1 ft", "1 ft", "3 ft", "7 ft", "10 ft"))
+        pal <- colorFactor(
+            palette = c('#000000', '#0000FF88', '#00FF00FF', '#FFFF00FF', '#FF0000FF'),
+            domain = factored
+        )
+
         leaflet() %>%
             addTiles() %>%
             addTiles(urlTemplate="static/slosh-cat1/{z}/{x}/{y}.png",
-                     attribution="Flooding inunation") %>%
-            setView(-75.4110209, 38.6882882, zoom=10)
-            ## addLegend(sloshpal=sloshpal, values=values(rr),
-            ##       title="Inundation (feet)", position="bottomright")
+                     attribution="Flooding inunation",
+                     options=tileOptions(tms=T, tileSize=256, minZoom=4, maxZoom=18)) %>%
+            setView(-75.4110209, 38.6882882, zoom=10) %>%
+            addLegend(pal=pal, values=factored,
+                  title="Inundation (feet)", position="bottomright")
     })
 
     ## Reactive expression to subset dataframe based on selection
