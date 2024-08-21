@@ -44,23 +44,7 @@ ui <- dashboardPage(
     dashboardBody(
         includeCSS("static/app.css"),
 
-        tags$head(
-                 tags$script(
-                          HTML("
-        // Define a function to send the window size to Shiny
-        function updateWindowSize() {
-          // Send the dimensions to the Shiny app, based on first card
-          Shiny.setInputValue('window_width', $('.card').width());
-        }
-        $(function() {
-          // Bind the function to window resize events and trigger once at load
-          $(window).resize(updateWindowSize);
-          $(document).ready(updateWindowSize);
-        });
-          ")
-          )),
-
-          tabItems(
+        tabItems(
             tabItem(tabName="barometer",
                     box(title="Bottom-Line Coastal Barometer", width=12,
                         markdown("The Bottom-Line Coastal Barometer combines risks and recent trends to estimate the health of the coastal economy of Delaware."),
@@ -243,13 +227,6 @@ server <- function(input, output) {
             })
         })
     }
-
-    # Create reactive expressions to capture the window dimensions
-    windowWidth <- reactive({
-        if (is.null(input$window_width))
-            return(1000)
-        input$window_width * 0.8  # Use 80% of window width
-    })
 
     output$speedometer <- renderPlot({
         df2s <- get.htf()
