@@ -48,7 +48,11 @@ ui <- dashboardPage(
             tabItem(tabName="barometer",
                     box(title="Bottom-Line Coastal Barometer", width=12,
                         markdown("The Bottom-Line Coastal Barometer combines risks and recent trends to estimate the health of the coastal economy of Delaware."),
-                        plotOutput("speedometer", height='80%')
+                        tooltip(
+                            plotOutput("speedometer"),
+                            title = "Higher numbers mean a stronger economy and less environmental risk.",
+                            placement = "right"
+                        )
                         ),
                     fluidRow(
                         box(title="Coastal Risks", width=6, height=340,
