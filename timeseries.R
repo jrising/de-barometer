@@ -19,11 +19,10 @@ tbltwo2implan <- rbind(data.frame(group="Food Services and Drinking Places", imp
                        data.frame(group="Services to Buildings and Dwellings: janitorial, pest control, etc.", implan=c(60, 61, 476, 477, 479, 516)))
 
 get.ts <- function(sec, lab) {
-    print(sec)
     if (is.na(sec) || sec == 'Full Economy')
-        subset(tsdf, is.na(sector) & label == lab & !(year == 2018 & group == 'Extrapolated'))
+        subset(tsdf, is.na(sector) & label == lab & !(year == 2018 & group == 'Extrapolated')) %>% arrange(year)
     else {
         multts <- subset(tsdf, !is.na(sector) & (sector %in% tbltwo2implan$implan[tbltwo2implan$group == sec]) & label == lab & !(year == 2018 & group == 'Extrapolated'))
-        multts %>% group_by(label, year, units) %>% summarize(scaled=sum(scaled))
+        multts %>% group_by(label, year, units) %>% summarize(scaled=sum(scaled)) %>% arrange(year)
     }
 }

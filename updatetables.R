@@ -72,6 +72,8 @@ if (F) {
 
 econinfo3 <- load.data("")
 newres2 <- results %>% left_join(econinfo3, by=c('Sector'='group'))
+newres2.contrib <- newres2 %>% filter(Sector != "State and Local Government other than Education")
+newres2.trends <- newres2.contrib %>% filter(Sector != "Real Estate Rental and Management")
 
 pred.value <- function(mod, newres2) {
     preds <- predict(mod, newres2)
